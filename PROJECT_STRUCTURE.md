@@ -1,6 +1,6 @@
 # Project Structure
 
-Complete overview of the AI Tree Chat database schema project structure.
+Complete overview of the AI Tree Chat application with Next.js and Supabase database schema.
 
 ```
 ai-tree-chat/
@@ -15,6 +15,37 @@ ai-tree-chat/
 ├── 📄 tsconfig.json                # TypeScript configuration
 ├── 📄 .gitignore                   # Git ignore patterns
 ├── 📄 .env.example                 # Environment variables template
+├── 📄 .eslintrc.json               # ESLint configuration
+├── 📄 .prettierrc.json             # Prettier configuration
+├── 📄 next.config.js               # Next.js configuration
+├── 📄 next-env.d.ts                # Next.js TypeScript declarations
+├── 📄 tailwind.config.ts           # Tailwind CSS configuration
+├── 📄 postcss.config.mjs           # PostCSS configuration
+├── 📄 components.json              # shadcn/ui configuration
+│
+├── 📁 src/                         # Next.js application source
+│   ├── 📁 app/                     # Next.js App Router
+│   │   ├── 📄 layout.tsx           # Root layout
+│   │   ├── 📄 page.tsx             # Home page
+│   │   └── 📄 globals.css          # Global styles
+│   ├── 📁 components/
+│   │   └── 📁 ui/                  # shadcn UI components
+│   │       ├── 📄 button.tsx       # Button component
+│   │       ├── 📄 input.tsx        # Input component
+│   │       ├── 📄 textarea.tsx     # Textarea component
+│   │       ├── 📄 dialog.tsx       # Dialog component
+│   │       ├── 📄 sheet.tsx        # Sheet component
+│   │       ├── 📄 tabs.tsx         # Tabs component
+│   │       └── 📄 scroll-area.tsx  # Scroll area component
+│   └── 📁 lib/
+│       ├── 📄 utils.ts             # Utility functions (cn)
+│       └── 📁 supabase/            # Supabase clients
+│           ├── 📄 client.ts        # Browser client
+│           └── 📄 server.ts        # Server client
+│
+├── 📁 lib/                         # Database utilities
+│   ├── 📄 database.types.ts        # Generated TypeScript types
+│   └── 📄 supabase.ts              # Database helper functions
 │
 ├── 📁 supabase/                    # Supabase configuration and migrations
 │   ├── 📄 config.toml              # Supabase local dev configuration
@@ -22,12 +53,8 @@ ai-tree-chat/
 │   └── 📁 migrations/              # SQL migration files
 │       └── 📄 20231211000000_initial_schema.sql
 │
-├── 📁 lib/                         # TypeScript libraries and utilities
-│   ├── 📄 database.types.ts        # Generated TypeScript types
-│   └── 📄 supabase.ts              # Helper functions and utilities
-│
 ├── 📁 examples/                    # Usage examples
-│   └── 📄 basic-usage.ts           # Comprehensive usage examples
+│   └── 📄 basic-usage.ts           # Comprehensive database usage examples
 │
 └── 📁 docs/                        # Detailed documentation
     ├── 📄 SCHEMA.md                # Database schema documentation
