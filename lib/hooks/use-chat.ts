@@ -16,7 +16,7 @@ export function useChat() {
   const [currentBranch, setCurrentBranch] = useState<Branch | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSending, setIsSending] = useState(false)
-  const supabase = createClient()
+  const supabase = createClient() as any
 
   // Load all sessions
   const loadSessions = useCallback(async () => {
@@ -69,10 +69,12 @@ export function useChat() {
         .order('created_at', { ascending: true })
 
       if (error) throw error
-      setBranches(data || [])
+      
+      const branches = data || []
+      setBranches(branches)
       
       // Set main branch as current if available
-      const mainBranch = data?.find(b => b.is_main)
+      const mainBranch = branches.find((b: Branch) => b.is_main)
       if (mainBranch) {
         setCurrentBranch(mainBranch)
       }
@@ -90,7 +92,7 @@ export function useChat() {
         .insert({
           title: title || 'New Chat',
           updated_at: new Date().toISOString()
-        })
+        } as Database['public']['Tables']['sessions']['Insert'])
         .select()
         .single()
 
@@ -103,7 +105,7 @@ export function useChat() {
           session_id: session.id,
           name: 'main',
           is_main: true
-        })
+        } as Database['public']['Tables']['branches']['Insert'])
         .select()
         .single()
 
@@ -151,10 +153,10 @@ export function useChat() {
           session_id: currentSession.id,
           branch_id: currentBranch?.id || null,
           parent_message_id: messages[messages.length - 1]?.id || null,
-          role: 'user',
+          role: 'user' as const,
           content: content.trim(),
           order_index: messages.length
-        })
+        } as Database['public']['Tables']['messages']['Insert'])
         .select()
         .single()
 
@@ -168,7 +170,7 @@ export function useChat() {
       // Update session updated_at
       await supabase
         .from('sessions')
-        .update({ updated_at: new Date().toISOString() })
+        .update({ updated_at: new Date().toISOString() } as Database['public']['Tables']['sessions']['Update'])
         .eq('id', currentSession.id)
 
       // Here you would typically call your AI API and add the assistant response
@@ -192,10 +194,10 @@ export function useChat() {
           session_id: currentSession.id,
           branch_id: currentBranch?.id || null,
           parent_message_id: userMessage.id,
-          role: 'assistant',
+          role: 'assistant' as const,
           content: assistantMessage.content,
           order_index: messages.length + 1
-        })
+        } as Database['public']['Tables']['messages']['Insert'])
         .select()
         .single()
 
@@ -268,7 +270,7 @@ export function useChat() {
             table: 'messages',
             filter: `session_id=eq.${currentSession.id}`
           },
-          (payload) => {
+          (payload: any) => {
             const newMessage = payload.new as Message
             setMessages(prev => {
               // Avoid duplicates
