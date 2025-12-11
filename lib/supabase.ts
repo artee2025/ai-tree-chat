@@ -183,6 +183,7 @@ export async function addConversationNode(
   options?: {
     parentId?: string
     depth?: number
+    sequenceOrder?: number
     modelName?: string
     modelProvider?: string
     temperature?: number
@@ -198,6 +199,7 @@ export async function addConversationNode(
       content,
       parent_id: options?.parentId || null,
       depth: options?.depth ?? 0,
+      sequence_order: options?.sequenceOrder ?? 0,
       model_name: options?.modelName,
       model_provider: options?.modelProvider,
       temperature: options?.temperature,
@@ -323,24 +325,21 @@ export async function selectBranch(
   supabase: ReturnType<typeof createSupabaseClient>,
   branchOptionId: string
 ) {
-  const { error } = await supabase.rpc('increment_branch_selection', {
-    branch_id: branchOptionId
-  })
+  // Get current selection count
+  const { data: branch } = await supabase
+    .from('branch_options')
+    .select('selection_count')
+    .eq('id', branchOptionId)
+    .single()
 
-  if (error) {
-    // Fallback if RPC doesn't exist
-    const { data: branch } = await supabase
+  if (branch) {
+    // Increment selection count
+    const { error } = await supabase
       .from('branch_options')
-      .select('selection_count')
+      .update({ selection_count: branch.selection_count + 1 })
       .eq('id', branchOptionId)
-      .single()
-
-    if (branch) {
-      await supabase
-        .from('branch_options')
-        .update({ selection_count: branch.selection_count + 1 })
-        .eq('id', branchOptionId)
-    }
+    
+    if (error) throw error
   }
 }
 

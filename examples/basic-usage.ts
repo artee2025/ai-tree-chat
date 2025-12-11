@@ -168,7 +168,7 @@ async function example4_CreateBranches(sessionId: string, parentNodeId: string) 
     {
       parentId: parentNodeId,
       depth: parentNode.depth + 1,
-      sequence_order: 0,
+      sequenceOrder: 0,
       modelName: 'gpt-4',
       modelProvider: 'openai'
     }
@@ -194,7 +194,7 @@ async function example4_CreateBranches(sessionId: string, parentNodeId: string) 
     {
       parentId: parentNodeId,
       depth: parentNode.depth + 1,
-      sequence_order: 1,
+      sequenceOrder: 1,
       modelName: 'gpt-4',
       modelProvider: 'openai'
     }
