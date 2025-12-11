@@ -1,322 +1,175 @@
-# AI Tree Chat
+# AI Chat Interface
 
-Interactive AI-powered chat application built with Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn UI, and Supabase.
-
-## Tech Stack
-
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS with CSS Variables for theming
-- **UI Components**: shadcn UI built on Radix UI primitives
-- **Backend**: Supabase (PostgreSQL + Authentication)
-- **Code Quality**: ESLint and Prettier
-- **Icons**: Lucide React
-- **Package Manager**: npm
+An advanced chat interface built with Next.js, shadcn/ui, and Supabase, featuring conversation branching and real-time updates.
 
 ## Features
 
-- ✅ Next.js 14 with App Router
-- ✅ TypeScript for type safety
-- ✅ Responsive design with Tailwind CSS
-- ✅ Pre-built shadcn UI components (Button, Input, Textarea, Sheet, Tabs, ScrollArea)
-- ✅ Dark mode support with theme switching
-- ✅ Supabase integration for backend services
-- ✅ ESLint and Prettier configuration
-- ✅ Modern font loading with Inter
-- ✅ Smooth animations and transitions
-- ✅ Optimized for Vercel deployment
+### UI Components
+- **Chat History List**: Grouped message bubbles with timestamps and auto-scroll
+- **Message Composer**: Multiline textarea with keyboard shortcuts
+- **Branch Selection**: View and select different conversation branches
+- **Session Navigation**: Sidebar to manage multiple chat sessions
+- **Typing Indicator**: Visual feedback when AI is responding
+- **Responsive Design**: Works seamlessly on mobile and desktop
 
-## Project Structure
+### UX Features
+- **Optimistic UI Updates**: Messages appear immediately before server confirmation
+- **Loading Skeletons**: Smooth loading experience
+- **Error Toasts**: User-friendly error notifications
+- **Keyboard Shortcuts**:
+  - `Enter`: Send message
+  - `Shift + Enter`: New line in message
+  - `⌘/Ctrl + K`: Create new chat
+  - `⌘/Ctrl + N`: Create new session
+- **Real-time Updates**: Live message synchronization via Supabase channels
 
-```
-project/
-├── src/
-│   ├── app/                          # Next.js app directory
-│   │   ├── layout.tsx               # Root layout with metadata
-│   │   ├── page.tsx                 # Home page
-│   │   └── globals.css              # Global styles and theme variables
-│   ├── components/
-│   │   └── ui/                      # shadcn UI components
-│   │       ├── button.tsx
-│   │       ├── input.tsx
-│   │       ├── textarea.tsx
-│   │       ├── dialog.tsx
-│   │       ├── sheet.tsx
-│   │       ├── tabs.tsx
-│   │       └── scroll-area.tsx
-│   ├── lib/
-│   │   ├── utils.ts                 # Utility functions (cn helper)
-│   │   └── supabase/
-│   │       ├── server.ts            # Supabase client for server components
-│   │       └── client.ts            # Supabase client for client components
-│   ├── hooks/                       # Custom React hooks
-│   └── utils/                       # Utility functions
-├── public/                          # Static assets
-├── .eslintrc.json                   # ESLint configuration
-├── .prettierrc.json                 # Prettier configuration
-├── tailwind.config.ts               # Tailwind CSS configuration
-├── tsconfig.json                    # TypeScript configuration
-├── next.config.js                   # Next.js configuration
-├── postcss.config.mjs               # PostCSS configuration
-├── components.json                  # shadcn configuration
-├── .env.example                     # Environment variables template
-└── package.json                     # Project dependencies and scripts
-```
+### Database Schema
+The application uses three main tables:
+- **sessions**: Chat sessions with title and timestamps
+- **branches**: Conversation branches within sessions
+- **messages**: Individual messages with role (user/assistant/system)
 
 ## Getting Started
 
 ### Prerequisites
-
-- Node.js 18+ and npm
-- Supabase account (for backend integration)
+- Node.js 18+ installed
+- A Supabase account and project
 
 ### Installation
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd project
-```
-
+1. Clone the repository
 2. Install dependencies:
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. Set up environment variables:
-```bash
-cp .env.example .env.local
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   Then edit `.env.local` with your Supabase credentials:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+4. Set up the database:
+   - Go to your Supabase project dashboard
+   - Navigate to SQL Editor
+   - Run the SQL in `supabase-schema.sql`
+
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
+
+```
+├── app/
+│   ├── layout.tsx          # Root layout with Toaster
+│   ├── page.tsx            # Main page with ChatInterface
+│   └── globals.css         # Global styles
+├── components/
+│   ├── chat/
+│   │   ├── chat-interface.tsx       # Main chat interface
+│   │   ├── chat-history-list.tsx    # Message list with auto-scroll
+│   │   ├── message-bubble.tsx       # Individual message component
+│   │   ├── message-composer.tsx     # Input area with send button
+│   │   ├── session-sidebar.tsx      # Session navigation
+│   │   ├── branch-selector.tsx      # Branch selection dropdown
+│   │   └── typing-indicator.tsx     # AI typing animation
+│   └── ui/                 # shadcn/ui components
+├── lib/
+│   ├── hooks/
+│   │   ├── use-chat.ts              # Main chat logic hook
+│   │   └── use-keyboard-shortcuts.ts # Keyboard shortcuts hook
+│   ├── supabase/
+│   │   ├── client.ts                # Supabase client setup
+│   │   └── types.ts                 # Database type definitions
+│   └── utils.ts            # Utility functions
+└── supabase-schema.sql     # Database schema
 ```
 
-4. Update `.env.local` with your configuration:
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-OPENROUTER_API_KEY=your-openrouter-api-key-here
-OPENAI_API_KEY=your-openai-api-key-here
-```
+## Tech Stack
 
-### Development
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **UI Library**: shadcn/ui (Radix UI + Tailwind CSS)
+- **Backend**: Supabase (PostgreSQL + Real-time)
+- **Styling**: Tailwind CSS
+- **Date Formatting**: date-fns
+- **Icons**: lucide-react
+- **Notifications**: sonner
 
-Start the development server:
-```bash
-npm run dev
-```
+## Customization
 
-The application will be available at [http://localhost:3000](http://localhost:3000).
+### Connecting Your AI API
 
-### Building for Production
+The chat interface includes a placeholder for AI responses. To connect your own AI API:
 
-Build the application:
-```bash
-npm run build
-```
+1. Open `lib/hooks/use-chat.ts`
+2. Find the `sendMessage` function
+3. Replace the placeholder response logic with your AI API call:
 
-Start the production server:
-```bash
-npm start
-```
+```typescript
+// Replace this section:
+const assistantMessage: Message = {
+  // ...
+  content: 'This is a placeholder response. Connect your AI API here.',
+  // ...
+}
 
-## Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run format` - Format code with Prettier
-
-## Environment Configuration
-
-### Supabase Setup
-
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Get your project URL and anon key from project settings
-3. Add them to `.env.local`:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
-
-### API Keys
-
-Add your API keys to `.env.local`:
-
-- `OPENROUTER_API_KEY` - For OpenRouter API access
-- `OPENAI_API_KEY` - For OpenAI API access
-
-## Theme System
-
-The application uses CSS variables for theming, supporting both light and dark modes:
-
-- Located in `src/app/globals.css`
-- Light mode variables are in `:root`
-- Dark mode variables are in `.dark`
-- Easily customizable by modifying the CSS variables
-
-### Available Color Variables
-
-- `--background` / `--foreground`
-- `--primary` / `--primary-foreground`
-- `--secondary` / `--secondary-foreground`
-- `--destructive` / `--destructive-foreground`
-- `--muted` / `--muted-foreground`
-- `--accent` / `--accent-foreground`
-- `--card` / `--card-foreground`
-- `--popover` / `--popover-foreground`
-- `--border`, `--input`, `--ring`
-
-## Components
-
-### Pre-built UI Components
-
-All components are built on Radix UI primitives for accessibility:
-
-- **Button** - Primary, secondary, outline, ghost, and link variants
-- **Input** - Text input with Tailwind styling
-- **Textarea** - Multi-line text input
-- **Dialog** - Modal dialog component
-- **Sheet** - Sliding panel from any side
-- **Tabs** - Tab navigation component
-- **ScrollArea** - Custom scrollable area
-
-### Usage Example
-
-```tsx
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export default function Example() {
-  return (
-    <div className="space-y-4">
-      <Input placeholder="Enter your message..." />
-      <Button>Send</Button>
-    </div>
-  );
+// With your API call:
+const response = await fetch('/api/chat', {
+  method: 'POST',
+  body: JSON.stringify({ message: content }),
+})
+const data = await response.json()
+const assistantMessage: Message = {
+  // ...
+  content: data.response,
+  // ...
 }
 ```
 
-## Supabase Integration
+### Styling
 
-### Server Component Usage
+The UI uses shadcn/ui components which are built on Tailwind CSS. You can customize:
 
-```tsx
-import { supabase } from "@/lib/supabase/server";
+- **Colors**: Edit `app/globals.css` CSS variables
+- **Components**: Modify files in `components/ui/`
+- **Theme**: Change the base color in `components.json`
 
-export default async function Example() {
-  const { data } = await supabase.from("table_name").select();
-  return <div>{/* Use data */}</div>;
-}
+## Development
+
+### Running Tests
+```bash
+npm test
 ```
 
-### Client Component Usage
-
-```tsx
-"use client";
-
-import { supabaseClient } from "@/lib/supabase/client";
-import { useEffect, useState } from "react";
-
-export default function Example() {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const { data } = await supabaseClient.from("table_name").select();
-      setData(data || []);
-    }
-    fetchData();
-  }, []);
-
-  return <div>{/* Use data */}</div>;
-}
+### Type Checking
+```bash
+npm run type-check
 ```
 
-## Deployment
-
-### Vercel Deployment
-
-This project is optimized for Vercel deployment:
-
-1. Push code to GitHub
-2. Connect repository to Vercel
-3. Add environment variables in Vercel project settings
-4. Deploy automatically on push
-
-The `next.config.js` is pre-configured for optimal Vercel performance.
-
-## Development Workflow
-
-1. Create feature branches from `main`
-2. Run `npm run lint` before committing
-3. Use `npm run format` to ensure code consistency
-4. Build locally with `npm run build` to verify
-5. Create pull requests for review
-
-## TypeScript
-
-The project is fully typed with TypeScript for type safety. The `tsconfig.json` includes:
-
-- Path aliases for cleaner imports (`@/*`)
-- Strict type checking
-- JSX support for React
-- Modern ES2020 target
-
-## Code Quality
-
-### ESLint
-
-ESLint is configured with Next.js recommended rules. Run linting:
-
+### Linting
 ```bash
 npm run lint
 ```
 
-### Prettier
-
-Prettier is configured for consistent code formatting. Format your code:
-
+### Building for Production
 ```bash
-npm run format
+npm run build
+npm start
 ```
-
-## Performance Optimizations
-
-- Image optimization with Next.js Image component
-- Code splitting with Next.js App Router
-- Optimized package imports with Tailwind CSS
-- CSS variables for efficient theming
-- Font loading optimization with `next/font`
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-ISC
-
-## Support
-
-For issues and questions, please use the GitHub Issues page.
-
-## Resources
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [React Documentation](https://react.dev)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [shadcn UI Documentation](https://ui.shadcn.com)
-- [Radix UI Documentation](https://www.radix-ui.com)
-- [Supabase Documentation](https://supabase.com/docs)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs)
+MIT
